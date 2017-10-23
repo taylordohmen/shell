@@ -101,7 +101,8 @@ void execute(char *args[], int count) {
     } else if (!strcmp(args[0], "exit")) {
         exit(0);
     } else if (!strcmp(args[0], "wait")) {
-        //tbd
+        int p;
+        while ((p = wait(0)) != -1);
     } else {
         int bg = 0;
         if (!strcmp(args[count-1], "&")) {
@@ -124,7 +125,6 @@ void execute(char *args[], int count) {
         } else {
             int stat;
             int w = waitpid(p, &stat, (bg ? WNOHANG : 0));
-            signal(SIGCHLD, SIG_IGN);
         }
     }
 }
@@ -154,6 +154,7 @@ void interpret(char input[]) {
         cleanup(args);
         free(count);
         free(redirect);   
+        signal(SIGCHLD, SIG_IGN);        
 }
 
 int main(int argc, char *argv[]) {
